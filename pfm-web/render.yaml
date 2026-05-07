@@ -1,0 +1,39 @@
+# render.yaml — KITT PFM Blueprint
+# Auto-deploys Postgres, API, and Static Site
+
+services:
+  # ── FastAPI Web Service ──────────────────────────────────────────
+  - type: web
+    name: kitt-pfm-api
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: cd api && pip install -r requirements.txt
+    startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: kitt-pfm-db
+          property: internalDatabaseUrl
+      - key: PORT
+        value: 10000
+      - key: PYTHON_VERSION
+        value: "3.11"
+    healthCheckPath: /api/health
+
+  # ── Astro Static Site ───────────────────────────────────────────
+  - type: web
+    name: kitt-pfm-web
+    region: oregon
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate
+    envVars:
+      - key: PUBLIC_API_URL
+        value: https://kitt-pfm-api.onrender.com
+      - key: NODE_VERSION
+        value: "20"
