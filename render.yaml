@@ -1,5 +1,5 @@
 # render.yaml — KITT PFM Blueprint
-# Auto-deploys FastAPI + Astro Static Site via Blueprint
+# Auto-deploys FastAPI + Astro Web Site via Blueprint
 
 services:
   # ── FastAPI Web Service ──────────────────────────────────────────
@@ -7,7 +7,6 @@ services:
     name: kitt-pfm-api
     runtime: python
     region: oregon
-    plan: free
     buildCommand: cd pfm-web/api && pip install -r requirements.txt
     startCommand: cd pfm-web/api && uvicorn api.main:app --host 0.0.0.0 --port $PORT
     envVars:
@@ -21,12 +20,13 @@ services:
         value: "3.11"
     healthCheckPath: /api/health
 
-  # ── Astro Static Site ───────────────────────────────────────────
+  # ── Astro Web Site (served as Node app) ──────────────────────────
   - type: web
     name: kitt-pfm-web
-    plan: free
+    runtime: node
+    region: oregon
     buildCommand: cd pfm-web && npm install && npm run build
-    staticPublishPath: pfm-web/dist
+    startCommand: cd pfm-web && npx serve dist -l $PORT
     envVars:
       - key: PUBLIC_API_URL
         value: https://kitt-pfm-api.onrender.com
