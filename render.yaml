@@ -24,7 +24,7 @@ services:
   # ── Astro Static Site ───────────────────────────────────────────
   - type: web
     name: kitt-pfm-web
-    runtime: static
+    plan: free
     buildCommand: cd pfm-web && npm install && npm run build
     staticPublishPath: pfm-web/dist
     envVars:
