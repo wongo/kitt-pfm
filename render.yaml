@@ -26,6 +26,7 @@ services:
     name: kitt-pfm-web
     region: oregon
     plan: free
+    runtime: static
     buildCommand: cd pfm-web && npm install && npm run build
     staticPublishPath: pfm-web/dist
     envVars:
