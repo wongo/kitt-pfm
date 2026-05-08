@@ -37,6 +37,7 @@ def create_app(token: str):
     app.add_handler(CallbackQueryHandler(handle_callback))
     app.add_handler(MessageHandler(filters.VOICE, handle_voice))
     app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_natural_language))
+    # Exclude photo messages — their captions are handled by handle_photo, not NLU
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND & ~filters.PHOTO, handle_natural_language))
 
     return app
