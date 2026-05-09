@@ -3,6 +3,9 @@
   "outputDirectory": "pfm-web/dist",
   "framework": null,
   "installCommand": "echo 'skip'",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
   "env": {
     "PUBLIC_API_URL": "https://kitt-pfm-api.onrender.com"
   }
