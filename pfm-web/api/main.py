@@ -4,7 +4,7 @@ FastAPI backend serving data from PostgreSQL on Render
 """
 import os
 import uuid
-from datetime import date
+from datetime import date as date_type
 from typing import Optional
 from collections import defaultdict
 
@@ -121,11 +121,11 @@ async def list_transactions(limit: int = 50, offset: int = 0):
 @app.get("/api/summary/{year}/{month}", response_model=MonthSummary)
 async def month_summary(year: int, month: int):
     p = await get_pool()
-    start = f"{year}-{month:02d}-01"
+    start = date_type(year, month, 1)
     if month == 12:
-        end = f"{year+1}-01-01"
+        end = date_type(year + 1, 1, 1)
     else:
-        end = f"{year}-{month+1:02d}-01"
+        end = date_type(year, month + 1, 1)
 
     async with p.acquire() as conn:
         rows = await conn.fetch("""
@@ -313,11 +313,11 @@ class BudgetsData(BaseModel):
 @app.get("/api/budgets/{year}/{month}", response_model=BudgetsData)
 async def get_budgets(year: int, month: int):
     p = await get_pool()
-    start = f"{year}-{month:02d}-01"
+    start = date_type(year, month, 1)
     if month == 12:
-        end = f"{year+1}-01-01"
+        end = date_type(year + 1, 1, 1)
     else:
-        end = f"{year}-{month+1:02d}-01"
+        end = date_type(year, month + 1, 1)
 
     async with p.acquire() as conn:
         budget_rows = await conn.fetch("""
