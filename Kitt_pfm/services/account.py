@@ -51,3 +51,7 @@ async def delete_account(acc_id: str):
         await db.execute("DELETE FROM transactions WHERE account_id = ?", (acc_id,))
         await db.execute("DELETE FROM accounts WHERE id = ?", (acc_id,))
         await db.commit()
+
+async def list_accounts(user_id: str):
+    """List all accounts for a user."""
+    return await get_all_accounts()

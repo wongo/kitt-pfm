@@ -33,3 +33,17 @@ async def create_category(name: str, icon: str = "") -> str:
         )
         await db.commit()
     return cat_id
+
+async def get_or_create_category(user_id: str, name: str) -> str:
+    """Get existing category by name or create new one."""
+    # First try to find existing
+    existing = await get_category_by_name(name)
+    if existing:
+        return existing["id"]
+    
+    # Create new with default icon
+    return await create_category(name, "")
+
+async def list_categories(user_id: str):
+    """List all categories (system + user)."""
+    return await get_all_categories()
