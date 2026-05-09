@@ -103,20 +103,20 @@ async def list_transactions(limit: int = 50, offset: int = 0):
             ORDER BY t.date DESC, t.created_at DESC
             LIMIT $1 OFFSET $2
         """, limit, offset)
-        return [
-            TransactionOut(
-                id=r["id"],
-                date=r["date"],
-                amount=abs(r["amount"]),
+        result = []
+        for r in rows:
+            result.append(TransactionOut(
+                id=str(r["id"]),
+                date=str(r["date"]),
+                amount=float(abs(r["amount"])),
                 currency="JPY",
                 category_id=r["category_id"],
-                category_name=r.get("cat_name"),
-                category_icon=r.get("cat_icon"),
-                description=r["description"] or "",
-                merchant=r["merchant"] or "",
-            )
-            for r in rows
-        ]
+                category_name=r["cat_name"] if r["cat_name"] else None,
+                category_icon=r["cat_icon"] if r["cat_icon"] else None,
+                description=r["description"] if r["description"] else "",
+                merchant=r["merchant"] if r["merchant"] else "",
+            ))
+        return result
 
 @app.get("/api/summary/{year}/{month}", response_model=MonthSummary)
 async def month_summary(year: int, month: int):
@@ -138,20 +138,19 @@ async def month_summary(year: int, month: int):
             ORDER BY t.date DESC
         """, start, end)
 
-        transactions = [
-            TransactionOut(
-                id=r["id"],
-                date=r["date"],
-                amount=abs(r["amount"]),
+        transactions = []
+        for r in rows:
+            transactions.append(TransactionOut(
+                id=str(r["id"]),
+                date=str(r["date"]),
+                amount=float(abs(r["amount"])),
                 currency="JPY",
                 category_id=r["category_id"],
-                category_name=r.get("cat_name"),
-                category_icon=r.get("cat_icon"),
-                description=r["description"] or "",
-                merchant=r["merchant"] or "",
-            )
-            for r in rows
-        ]
+                category_name=r["cat_name"] if r["cat_name"] else None,
+                category_icon=r["cat_icon"] if r["cat_icon"] else None,
+                description=r["description"] if r["description"] else "",
+                merchant=r["merchant"] if r["merchant"] else "",
+            ))
 
         by_cat = defaultdict(lambda: {"total": 0.0, "count": 0, "name": "", "icon": ""})
         total = 0.0
