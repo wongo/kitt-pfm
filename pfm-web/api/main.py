@@ -95,7 +95,9 @@ async def list_transactions(limit: int = 50, offset: int = 0):
     p = await get_pool()
     async with p.acquire() as conn:
         rows = await conn.fetch("""
-            SELECT t.*, c.name as cat_name, c.icon as cat_icon
+            SELECT t.id, t.account_id, t.date, t.amount, t.category_id,
+                   t.description, t.merchant, t.notes, t.is_confirmed, t.created_at,
+                   c.name as cat_name, c.icon as cat_icon
             FROM transactions t
             LEFT JOIN categories c ON t.category_id = c.id
             ORDER BY t.date DESC, t.created_at DESC
@@ -127,7 +129,9 @@ async def month_summary(year: int, month: int):
 
     async with p.acquire() as conn:
         rows = await conn.fetch("""
-            SELECT t.*, c.name as cat_name, c.icon as cat_icon
+            SELECT t.id, t.account_id, t.date, t.amount, t.category_id,
+                   t.description, t.merchant, t.notes, t.is_confirmed, t.created_at,
+                   c.name as cat_name, c.icon as cat_icon
             FROM transactions t
             LEFT JOIN categories c ON t.category_id = c.id
             WHERE t.date >= $1 AND t.date < $2
