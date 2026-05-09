@@ -1,0 +1,9 @@
+{
+  "name": "kitt-pfm-root",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'No root dev'",
+    "build": "cd pfm-web && npm install && npm run build"
+  }
+}

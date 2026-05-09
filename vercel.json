@@ -2,8 +2,8 @@
   "buildCommand": "cd pfm-web && npm install && npm run build",
   "outputDirectory": "pfm-web/dist",
   "framework": null,
+  "installCommand": "echo 'skip'",
   "env": {
     "PUBLIC_API_URL": "https://kitt-pfm-api.onrender.com"
-  },
-  "redirects": []
+  }
 }
